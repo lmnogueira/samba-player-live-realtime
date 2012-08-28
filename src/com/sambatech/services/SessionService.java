@@ -56,7 +56,7 @@ public class SessionService {
 		IMap<String, Session> sessionMap = client.getMap(Constants.SESSIONS);
 				
 		Collection<Session> sessionResult = (Collection<Session>) sessionMap.values(new
-				  SqlPredicate("namespace = \""+ namespace +"\""));
+				  SqlPredicate("nameSpace LIKE "+ namespace +""));
 		
 		return callback + "({ \"count\" : \"" + sessionResult.size() + "\" });";
 	}	

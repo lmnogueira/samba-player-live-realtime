@@ -12,8 +12,8 @@ public class Session implements Serializable{
 	private String  nameSpace;
 	private String  idMedia;
 	
-	public Session(String nSpace, String idMedia){
-		this.nameSpace = nSpace;
+	public Session(String nameSpace, String idMedia){
+		this.nameSpace = nameSpace;
 		this.idMedia = idMedia;
 	}
 	
@@ -21,8 +21,8 @@ public class Session implements Serializable{
 		return nameSpace;
 	}
 
-	public void setIdSession(String nSpace) {
-		this.nameSpace = nSpace;
+	public void setNameSpace(String nameSpace) {
+		this.nameSpace = nameSpace;
 	}
 	
 	public String getIdMedia() {

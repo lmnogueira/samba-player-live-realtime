@@ -122,7 +122,7 @@ public class Collector {
 
 		Map<String, Session> mapSessions = client.getMap("sessions");
 
-		mapSessions.put(session.getIdSession(), session);
+		mapSessions.put(session.getNameSpace(), session);
 
 		return PIXEL_BYTES;
 	}
