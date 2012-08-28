@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
+import com.hazelcast.core.IQueue;
 import com.hazelcast.query.SqlPredicate;
 import com.sambatech.cluster.HazelCastSingleton;
 import com.sambatech.constants.Constants;
@@ -28,24 +29,31 @@ import com.sambatech.models.SessionInfo;
 public class Collector {
 
 	@GET
-	@Path("/event/{namespace}/{event}")
+	@Path("/event")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String trackEvent(@PathParam("namespace") String namespace,
-			@PathParam("event") String eventName,
-			@DefaultValue("") @QueryParam("idMedia") String idMedia,
-			@DefaultValue("") @QueryParam("idSession") String idSession) {
+	public String trackEvent(
+			@DefaultValue("") @QueryParam("ns") String namespace,
+			@DefaultValue("") @QueryParam("en") String eventName,
+			@DefaultValue("") @QueryParam("id") String idMedia,
+			@DefaultValue("") @QueryParam("s") String idSession) {
 
-		Event event = new Event(idSession, eventName, namespace, idMedia,
+		Event event = new Event(idSession + ":" + eventName, eventName, namespace, idMedia,
 				(Long) new Date().getTime());
 
+		//instanciando o client
 		HazelcastInstance client = HazelcastClient
 				.newHazelcastClient(HazelCastSingleton.getInstance()
 						.getClientConfig());
 
+		//obtendo o mapa de eventos
 		Map<String, Event> mapEvents = client.getMap("events");
-		mapEvents.put(event.getName(), event);
+		mapEvents.put(event.getIdSession(), event);
 
-		return "Tracking Event! => " + mapEvents.get(eventName).getName();
+		//adicionando o events na FILA
+		IQueue<String> eventQueue = client.getQueue(Constants.EVENTS);
+		eventQueue.offer(event.getIdSession());		
+		
+		return "Tracking Event! => " + mapEvents.get(idSession + ":" + eventName).getIdSession();
 	}
 
 	@GET
@@ -68,22 +76,36 @@ public class Collector {
 				(Long) new Date().getTime(), playerHash, idMedia, streamName,
 				remoteAddress, gender, interest);
 
+		//instanciando o client
 		HazelcastInstance client = HazelcastClient
 				.newHazelcastClient(HazelCastSingleton.getInstance()
 						.getClientConfig());
 
+		//obtendo o mapa de sessions
 		Map<String, Session> mapSessions = client.getMap(Constants.SESSIONS);
 		mapSessions.put(session.getIdSession(), session);
+
+		//obtendo o mapa de sessionsInfo
+		Map<String, SessionInfo> mapSessionsInfo = client
+				.getMap(Constants.SESSIONS_INFO);
+		mapSessionsInfo.put(sessionInfo.getIdSession(), sessionInfo);
+
+		//adicionando a sessionID na FILA
+		IQueue<String> sessionQueue = client.getQueue(Constants.SESSIONS_INFO);
+		sessionQueue.offer(session.getIdSession());
 		
-		Map<String, Session> mapSessionsInfo = client.getMap(Constants.SESSIONS_INFO);
+		/*
+		 * Map<String, Session> mapSessionsInfo = client
+		 * .getMap(Constants.SESSIONS_INFO);
+		 * 
+		 * IMap<String, Session> map = client.getMap("sessions");
+		 * Collection<Session> sess = (Collection<Session>) map .values(new
+		 * SqlPredicate("timeStamp >= 100"));
+		 */
 
-		IMap<String, Session> map = client.getMap("sessions");
-		Collection<Session> sess = (Collection<Session>) map
-				.values(new SqlPredicate("timeStamp >= 100"));
-
-		return "Create Session:";
+		return "Creating Session: " + session.getIdSession();
 	}
-	
+
 	@GET
 	@Path("/session/update")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -104,5 +126,5 @@ public class Collector {
 
 		return "Session updated.";
 	}
-	
+
 }

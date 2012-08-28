@@ -18,7 +18,7 @@ public class SessionInfo implements Serializable{
 	private String  gender;
 	private String  interest;
 	
-	public SessionInfo(String idSession, Long timeStamp, String playerHash, String idMedia, String streamName, String ipAddress, String gender, String Interest){
+	public SessionInfo(String idSession, Long timeStamp, String playerHash, String idMedia, String streamName, String ipAddress, String gender, String interest){
 		this.idSession = idSession;
 		this.timeStamp = timeStamp;
 		this.playerHash = playerHash;
