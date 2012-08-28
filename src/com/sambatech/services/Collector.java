@@ -111,10 +111,11 @@ public class Collector {
 	@Produces("image/gif")
 	public byte[] trackSessionUpdate(@Context HttpServletRequest req,
 			@DefaultValue("") @QueryParam("s") String sessionID, // session
+			@DefaultValue("") @QueryParam("ns") String nameSpace, // playerhash
 			@DefaultValue("") @QueryParam("id") String idMedia // playerhash
 	) {
 
-		Session session = new Session(sessionID, idMedia);
+		Session session = new Session(nameSpace, idMedia);
 
 		HazelcastInstance client = HazelcastClient
 				.newHazelcastClient(HazelCastSingleton.getInstance()
@@ -122,7 +123,7 @@ public class Collector {
 
 		Map<String, Session> mapSessions = client.getMap("sessions");
 
-		mapSessions.put(session.getNameSpace(), session);
+		mapSessions.put(sessionID, session);
 
 		return PIXEL_BYTES;
 	}

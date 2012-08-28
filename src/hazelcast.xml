@@ -96,7 +96,7 @@
   <map name="sessions">
         <backup-count>1</backup-count>
         <async-backup-count>0</async-backup-count>
-        <time-to-live-seconds>10</time-to-live-seconds>
+        <time-to-live-seconds>15</time-to-live-seconds>
         <max-idle-seconds>0</max-idle-seconds>
         <eviction-policy>LRU</eviction-policy>
         <max-size policy="cluster_wide_map_size">0</max-size>
