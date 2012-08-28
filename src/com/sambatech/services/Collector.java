@@ -19,6 +19,7 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.IQueue;
 import com.hazelcast.query.SqlPredicate;
+import com.hazelcast.util.Base64;
 import com.sambatech.cluster.HazelCastSingleton;
 import com.sambatech.constants.Constants;
 import com.sambatech.models.Event;
@@ -28,10 +29,13 @@ import com.sambatech.models.SessionInfo;
 @Path("/collect")
 public class Collector {
 
+	private static final String PIXEL_B64  = "R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+	private static final byte[] PIXEL_BYTES = Base64.decode(PIXEL_B64.getBytes());
+	
 	@GET
 	@Path("/event")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String trackEvent(
+	@Produces("image/gif")
+	public byte[] trackEvent(
 			@DefaultValue("") @QueryParam("ns") String namespace,
 			@DefaultValue("") @QueryParam("en") String eventName,
 			@DefaultValue("") @QueryParam("id") String idMedia,
@@ -53,13 +57,13 @@ public class Collector {
 		IQueue<String> eventQueue = client.getQueue(Constants.EVENTS);
 		eventQueue.offer(event.getIdSession());		
 		
-		return "Tracking Event! => " + mapEvents.get(idSession + ":" + eventName).getIdSession();
+		return PIXEL_BYTES;
 	}
 
 	@GET
 	@Path("/session/create")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String trackSessionInfo(@Context HttpServletRequest req,
+	@Produces("image/gif")
+	public byte[] trackSessionInfo(@Context HttpServletRequest req,
 			@DefaultValue("") @QueryParam("s") String sessionID, // session
 			@DefaultValue("") @QueryParam("ph") String playerHash, // playerhash
 			@DefaultValue("") @QueryParam("id") String idMedia, // idmedia
@@ -103,13 +107,13 @@ public class Collector {
 		 * SqlPredicate("timeStamp >= 100"));
 		 */
 
-		return "Creating Session: " + session.getIdSession();
+		return PIXEL_BYTES;
 	}
 
 	@GET
 	@Path("/session/update")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String trackSessionUpdate(@Context HttpServletRequest req,
+	@Produces("image/gif")
+	public byte[] trackSessionUpdate(@Context HttpServletRequest req,
 			@DefaultValue("") @QueryParam("s") String sessionID, // session
 			@DefaultValue("") @QueryParam("id") String idMedia // playerhash
 	) {
@@ -124,7 +128,7 @@ public class Collector {
 
 		mapSessions.put(session.getIdSession(), session);
 
-		return "Session updated.";
+		return PIXEL_BYTES;
 	}
 
 }
