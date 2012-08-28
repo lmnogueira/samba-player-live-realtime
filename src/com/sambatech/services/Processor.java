@@ -106,7 +106,8 @@ public class Processor {
         System.out.println("processing...");
     }
 
+    /*
     public static void main(String[] args) {
         Processor processor = new Processor(1);
-    }
+    }*/
 }

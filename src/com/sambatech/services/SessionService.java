@@ -80,7 +80,13 @@ public class SessionService {
 				
 		SessionViews sessionResult = sessionMap.get(namespace);
 		
-		return callback + "({ \"views\" : \"" + sessionResult.getViews() + "\" });";
+		Long views = 0L;
+		
+		if(sessionResult != null)
+			views = sessionResult.getViews();	
+
+		
+		return callback + "({ \"views\" : \"" + views.toString() + "\" });";
 	}
 	
 	
@@ -102,6 +108,11 @@ public class SessionService {
 				
 		SessionViews sessionResult = sessionMap.get(namespace + ":" + id);
 		
-		return callback + "({ \"views\" : \"" + sessionResult.getViews() + "\" });";
+		Long views = 0L;
+		
+		if(sessionResult != null)
+			views = sessionResult.getViews();	
+		
+		return callback + "({ \"views\" : \"" + views.toString() + "\" });";
 	}	
 }

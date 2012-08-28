@@ -7,7 +7,7 @@ import com.sambatech.services.Processor;
 
 public class HazelCastSingleton {
 
-	private static HazelCastSingleton instance = new HazelCastSingleton();
+	private static HazelCastSingleton instance;
 	private HazelcastInstance hazelcastInstance;
 	private ClientConfig config;
 	
