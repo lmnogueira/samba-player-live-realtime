@@ -106,7 +106,7 @@ public class Collector {
 		 * Collection<Session> sess = (Collection<Session>) map .values(new
 		 * SqlPredicate("timeStamp >= 100"));
 		 */
-
+		
 		return PIXEL_BYTES;
 	}
 
