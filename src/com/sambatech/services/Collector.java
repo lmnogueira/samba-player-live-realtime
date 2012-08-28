@@ -24,9 +24,10 @@ import com.sambatech.models.SessionInfo;
 @Path("/collect")
 public class Collector {
 
-	private static final String PIXEL_B64  = "R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
-	private static final byte[] PIXEL_BYTES = Base64.decode(PIXEL_B64.getBytes());
-	
+	private static final String PIXEL_B64 = "R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+	private static final byte[] PIXEL_BYTES = Base64.decode(PIXEL_B64
+			.getBytes());
+
 	@GET
 	@Path("/event")
 	@Produces("image/gif")
@@ -36,22 +37,22 @@ public class Collector {
 			@DefaultValue("") @QueryParam("id") String idMedia,
 			@DefaultValue("") @QueryParam("s") String idSession) {
 
-		Event event = new Event(idSession + ":" + eventName, eventName, namespace, idMedia,
-				(Long) new Date().getTime());
+		Event event = new Event(idSession + ":" + eventName, eventName,
+				namespace, idMedia, (Long) new Date().getTime());
 
-		//instanciando o client
+		// instanciando o client
 		HazelcastInstance client = HazelcastClient
 				.newHazelcastClient(HazelCastSingleton.getInstance()
 						.getClientConfig());
 
-		//obtendo o mapa de eventos
+		// obtendo o mapa de eventos
 		Map<String, Event> mapEvents = client.getMap("events");
 		mapEvents.put(event.getIdSession(), event);
 
-		//adicionando o events na FILA
+		// adicionando o events na FILA
 		IQueue<String> eventQueue = client.getQueue(Constants.EVENTS);
-		eventQueue.offer(event.getIdSession());		
-		
+		eventQueue.offer(event.getIdSession());
+
 		return PIXEL_BYTES;
 	}
 
@@ -61,7 +62,6 @@ public class Collector {
 	public byte[] trackSessionInfo(@Context HttpServletRequest req,
 			@DefaultValue("") @QueryParam("s") String sessionID, // session
 			@DefaultValue("") @QueryParam("ns") String nameSpace, // Name Space
-			@DefaultValue("") @QueryParam("ph") String playerHash, // playerhash
 			@DefaultValue("") @QueryParam("id") String idMedia, // idmedia
 			@DefaultValue("") @QueryParam("sn") String streamName, // streamname
 			@DefaultValue("") @QueryParam("g") String gender, // gender
@@ -73,27 +73,27 @@ public class Collector {
 
 		Session session = new Session(nameSpace, idMedia);
 		SessionInfo sessionInfo = new SessionInfo(sessionID,
-				(Long) new Date().getTime(), playerHash, idMedia, streamName,
-				remoteAddress, gender, interest);
+				(Long) new Date().getTime(), nameSpace, idMedia, remoteAddress,
+				gender, interest);
 
-		//instanciando o client
+		// instanciando o client
 		HazelcastInstance client = HazelcastClient
 				.newHazelcastClient(HazelCastSingleton.getInstance()
 						.getClientConfig());
 
-		//obtendo o mapa de sessions
+		// obtendo o mapa de sessions
 		Map<String, Session> mapSessions = client.getMap(Constants.SESSIONS);
 		mapSessions.put(sessionID, session);
 
-		//obtendo o mapa de sessionsInfo
+		// obtendo o mapa de sessionsInfo
 		Map<String, SessionInfo> mapSessionsInfo = client
 				.getMap(Constants.SESSIONS_INFO);
 		mapSessionsInfo.put(sessionID, sessionInfo);
 
-		//adicionando a sessionID na FILA
+		// adicionando a sessionID na FILA
 		IQueue<String> sessionQueue = client.getQueue(Constants.SESSIONS_INFO);
 		sessionQueue.offer(sessionID);
-		
+
 		/*
 		 * Map<String, Session> mapSessionsInfo = client
 		 * .getMap(Constants.SESSIONS_INFO);
@@ -102,7 +102,7 @@ public class Collector {
 		 * Collection<Session> sess = (Collection<Session>) map .values(new
 		 * SqlPredicate("timeStamp >= 100"));
 		 */
-		
+
 		return PIXEL_BYTES;
 	}
 
@@ -121,7 +121,7 @@ public class Collector {
 				.newHazelcastClient(HazelCastSingleton.getInstance()
 						.getClientConfig());
 
-		Map<String, Session> mapSessions = client.getMap("sessions");
+		Map<String, Session> mapSessions = client.getMap(Constants.SESSIONS);
 
 		mapSessions.put(sessionID, session);
 

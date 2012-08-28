@@ -16,10 +16,11 @@ import com.hazelcast.query.SqlPredicate;
 import com.sambatech.cluster.HazelCastSingleton;
 import com.sambatech.constants.Constants;
 import com.sambatech.models.Session;
+import com.sambatech.models.SessionViews;
 
 @Path("/session")
 public class SessionService {
-
+	
 	@GET
 	@Path("/count")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -59,5 +60,48 @@ public class SessionService {
 				  SqlPredicate("nameSpace LIKE "+ namespace +""));
 		
 		return callback + "({ \"count\" : \"" + sessionResult.size() + "\" });";
+	}
+	
+	@GET
+	@Path("/views/{namespace}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String viewsByNamespace(@PathParam("namespace") String namespace,
+			@DefaultValue("") @QueryParam("cb") String callback) {
+		
+		if(callback.equals(""))
+			callback = "callback";
+		
+		//instanciando o client
+		HazelcastInstance client = HazelcastClient
+				.newHazelcastClient(HazelCastSingleton.getInstance()
+						.getClientConfig());
+		//obtendo o mapa de sessions
+		IMap<String, SessionViews> sessionMap = client.getMap(Constants.SESSIONS_VIEWS);
+				
+		SessionViews sessionResult = sessionMap.get(namespace);
+		
+		return callback + "({ \"views\" : \"" + sessionResult.getViews() + "\" });";
+	}
+	
+	
+	@GET
+	@Path("/views/{namespace}/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String viewsById(@PathParam("namespace") String namespace,@PathParam("id") String id,
+			@DefaultValue("") @QueryParam("cb") String callback) {
+		
+		if(callback.equals(""))
+			callback = "callback";
+		
+		//instanciando o client
+		HazelcastInstance client = HazelcastClient
+				.newHazelcastClient(HazelCastSingleton.getInstance()
+						.getClientConfig());
+		//obtendo o mapa de sessions
+		IMap<String, SessionViews> sessionMap = client.getMap(Constants.SESSIONS_VIEWS);
+				
+		SessionViews sessionResult = sessionMap.get(namespace + ":" + id);
+		
+		return callback + "({ \"views\" : \"" + sessionResult.getViews() + "\" });";
 	}	
 }

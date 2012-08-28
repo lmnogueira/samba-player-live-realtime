@@ -3,6 +3,7 @@ package com.sambatech.cluster;
 import com.hazelcast.client.ClientConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.sambatech.services.Processor;
 
 public class HazelCastSingleton {
 

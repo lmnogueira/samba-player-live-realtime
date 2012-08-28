@@ -3,6 +3,7 @@ package com.sambatech.constants;
 public class Constants {
     public static final String SESSIONS = "sessions";
     public static final String SESSIONS_INFO = "sessions_info";
+    public static final String SESSIONS_VIEWS = "sessions_views";
     
     public static final String EVENTS = "events";
     public static final String EVENTS_PROCESSED = "events_processed";

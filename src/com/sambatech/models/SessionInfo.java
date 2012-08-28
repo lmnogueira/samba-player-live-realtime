@@ -10,20 +10,18 @@ public class SessionInfo implements Serializable{
 	private static final long serialVersionUID = 9074032403519256313L;
 	
 	private String  idSession;
+	private String  nameSpace;
 	private Long    timeStamp;
-	private String  playerHash;
-	private String  streamName;
 	private String  ipAddress;
 	private String  idMedia;
 	private String  gender;
 	private String  interest;
 	
-	public SessionInfo(String idSession, Long timeStamp, String playerHash, String idMedia, String streamName, String ipAddress, String gender, String interest){
+	public SessionInfo(String idSession, Long timeStamp, String nameSpace, String idMedia, String ipAddress, String gender, String interest){
 		this.idSession = idSession;
 		this.timeStamp = timeStamp;
-		this.playerHash = playerHash;
+		this.nameSpace = nameSpace;
 		this.idMedia = idMedia;
-		this.streamName = streamName;
 		this.ipAddress = ipAddress;
 		this.gender = gender;
 		this.interest = interest;
@@ -61,12 +59,12 @@ public class SessionInfo implements Serializable{
 		this.timeStamp = timeStamp;
 	}
 	
-	public String getPlayerHash() {
-		return playerHash;
+	public String getNameSpace() {
+		return nameSpace;
 	}
 
-	public void setPlayerHash(String playerHash) {
-		this.playerHash = playerHash;
+	public void setNameSpace(String nameSpace) {
+		this.nameSpace = nameSpace;
 	}
 
 	public String getIdMedia() {
@@ -75,14 +73,6 @@ public class SessionInfo implements Serializable{
 
 	public void setIdMedia(String idMedia) {
 		this.idMedia = idMedia;
-	}
-
-	public String getStreamName() {
-		return streamName;
-	}
-
-	public void setStreamName(String streamName) {
-		this.streamName = streamName;
 	}
 
 	public String getInterest() {
