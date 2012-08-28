@@ -9,20 +9,20 @@ public class Session implements Serializable{
 
 	private static final long serialVersionUID = 9074032403519256313L;
 	
-	private String  idSession;
+	private String  nameSpace;
 	private String  idMedia;
 	
-	public Session(String idSession, String idMedia){
-		this.idSession = idSession;
+	public Session(String nSpace, String idMedia){
+		this.nameSpace = nSpace;
 		this.idMedia = idMedia;
 	}
 	
-	public String getIdSession() {
-		return idSession;
+	public String getNameSpace() {
+		return nameSpace;
 	}
 
-	public void setIdSession(String idSession) {
-		this.idSession = idSession;
+	public void setIdSession(String nSpace) {
+		this.nameSpace = nSpace;
 	}
 	
 	public String getIdMedia() {

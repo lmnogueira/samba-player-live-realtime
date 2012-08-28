@@ -1,6 +1,5 @@
 package com.sambatech.services;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
@@ -8,17 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
 import com.hazelcast.core.IQueue;
-import com.hazelcast.query.SqlPredicate;
 import com.hazelcast.util.Base64;
 import com.sambatech.cluster.HazelCastSingleton;
 import com.sambatech.constants.Constants;
@@ -65,6 +60,7 @@ public class Collector {
 	@Produces("image/gif")
 	public byte[] trackSessionInfo(@Context HttpServletRequest req,
 			@DefaultValue("") @QueryParam("s") String sessionID, // session
+			@DefaultValue("") @QueryParam("ns") String nameSpace, // Name Space
 			@DefaultValue("") @QueryParam("ph") String playerHash, // playerhash
 			@DefaultValue("") @QueryParam("id") String idMedia, // idmedia
 			@DefaultValue("") @QueryParam("sn") String streamName, // streamname
@@ -75,7 +71,7 @@ public class Collector {
 		String remoteAddress = req.getRemoteAddr();
 		// remoteAddress = req.getHeader( "X_FORWARDED_FOR" );
 
-		Session session = new Session(sessionID, idMedia);
+		Session session = new Session(nameSpace, idMedia);
 		SessionInfo sessionInfo = new SessionInfo(sessionID,
 				(Long) new Date().getTime(), playerHash, idMedia, streamName,
 				remoteAddress, gender, interest);
@@ -87,16 +83,16 @@ public class Collector {
 
 		//obtendo o mapa de sessions
 		Map<String, Session> mapSessions = client.getMap(Constants.SESSIONS);
-		mapSessions.put(session.getIdSession(), session);
+		mapSessions.put(sessionID, session);
 
 		//obtendo o mapa de sessionsInfo
 		Map<String, SessionInfo> mapSessionsInfo = client
 				.getMap(Constants.SESSIONS_INFO);
-		mapSessionsInfo.put(sessionInfo.getIdSession(), sessionInfo);
+		mapSessionsInfo.put(sessionID, sessionInfo);
 
 		//adicionando a sessionID na FILA
 		IQueue<String> sessionQueue = client.getQueue(Constants.SESSIONS_INFO);
-		sessionQueue.offer(session.getIdSession());
+		sessionQueue.offer(sessionID);
 		
 		/*
 		 * Map<String, Session> mapSessionsInfo = client
