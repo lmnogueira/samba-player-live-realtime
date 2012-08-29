@@ -27,7 +27,6 @@ public class Processor {
         for (int i = 0; i < nThreads; i++) {
             executorService.execute(new Runnable() {
                 public void run() {
-                	int timeSleep = 0;
                 	                	
                     while (running) {
 //                        Transaction transaction = Hazelcast.getTransaction();
@@ -40,8 +39,10 @@ public class Processor {
                             	logger.log(Level.INFO, sessionId.toString());
                             	
                             	SessionInfo session= sessionInfo.get(sessionId);
-                                
+                            	
                             	processSessionViews(session,client);
+                                
+                            	sessionInfo.remove(sessionId);
                             } else {
                             	Thread.currentThread().sleep(5000L);
                             }
