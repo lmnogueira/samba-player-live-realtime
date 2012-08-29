@@ -7,6 +7,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.hadoop.hbase.util.Sleeper;
 import org.apache.tomcat.jni.Local;
 
 import com.hazelcast.client.HazelcastClient;
@@ -38,14 +39,16 @@ public class Processor {
                         try {
                         	
 //                          transaction.begin();
-                            String sessionId = sessionInfoQueue.take();
+                            String sessionId = sessionInfoQueue.poll();
                             
-                            if(sessionId.length() > 0){
+                            if(sessionId != null){
                             	logger.log(Level.INFO, sessionId.toString());
                             	
                             	SessionInfo session= sessionInfo.get(sessionId);
                                 
                             	processSessionViews(session,client);
+                            } else {
+                            	Thread.currentThread().sleep(5000L);
                             }
                             //CrashReport report = map.get(reportId);
                             //process(report.getJSON());
@@ -66,8 +69,8 @@ public class Processor {
     private void processSessionViews(SessionInfo session, HazelcastInstance client) {
     	IMap<String, SessionViews> sessionViews = client.getMap(Constants.SESSIONS_VIEWS);
     	
-    	Lock lock = client.getLock(session.getNameSpace() + ":" + session.getIdMedia());
-    	lock.lock();
+    	//Lock lock = client.getLock(session.getNameSpace() + ":" + session.getIdMedia());
+    	//lock.lock();
     	try {
     		SessionViews sessionView = sessionViews.get(session.getNameSpace() + ":" + session.getIdMedia());
     		
@@ -80,11 +83,11 @@ public class Processor {
     		sessionViews.put(session.getNameSpace() + ":" + session.getIdMedia(), sessionView);
     		
     	} finally {
-    	    lock.unlock();
+    	    //lock.unlock();
     	}
     	
-    	lock = client.getLock(session.getNameSpace());
-    	lock.lock();
+    	//lock = client.getLock(session.getNameSpace());
+    	//lock.lock();
     	try {
     		SessionViews sessionView = sessionViews.get(session.getNameSpace());
     		
@@ -97,7 +100,7 @@ public class Processor {
     		sessionViews.put(session.getNameSpace(), sessionView);
     		
     	} finally {
-    	    lock.unlock();
+    	    //lock.unlock();
     	}    	   	
     	
     }
