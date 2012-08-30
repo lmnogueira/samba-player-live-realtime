@@ -3,6 +3,7 @@ package com.sambatech.services;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,14 +36,10 @@ public class Processor {
 //                          transaction.begin();
                             String sessionId = sessionInfoQueue.poll();
                             
-                            if(sessionId != null){
-                            	logger.log(Level.INFO, sessionId.toString());
-                            	
+                            if(sessionId != null){                           	
                             	SessionInfo session= sessionInfo.get(sessionId);
-                            	
                             	processSessionViews(session,client);
-                                
-                            	sessionInfo.remove(sessionId);
+                                sessionInfo.remove(sessionId);
                             } else {
                             	Thread.currentThread().sleep(5000L);
                             }
@@ -65,8 +62,8 @@ public class Processor {
     private void processSessionViews(SessionInfo session, HazelcastInstance client) {
     	IMap<String, SessionViews> sessionViews = client.getMap(Constants.SESSIONS_VIEWS);
     	
-    	//Lock lock = client.getLock(session.getNameSpace() + ":" + session.getIdMedia());
-    	//lock.lock();
+    	Lock lock = client.getLock(session.getNameSpace() + ":" + session.getIdMedia());
+    	lock.lock();
     	try {
     		SessionViews sessionView = sessionViews.get(session.getNameSpace() + ":" + session.getIdMedia());
     		
@@ -79,11 +76,11 @@ public class Processor {
     		sessionViews.put(session.getNameSpace() + ":" + session.getIdMedia(), sessionView);
     		
     	} finally {
-    	   // lock.unlock();
+    	   lock.unlock();
     	}
     	
-    	//lock = client.getLock(session.getNameSpace());
-    	//lock.lock();
+    	lock = client.getLock(session.getNameSpace());
+    	lock.lock();
     	try {
     		SessionViews sessionView = sessionViews.get(session.getNameSpace());
     		
@@ -96,7 +93,7 @@ public class Processor {
     		sessionViews.put(session.getNameSpace(), sessionView);
     		
     	} finally {
-    	    //lock.unlock();
+    	   lock.unlock();
     	}    	   	
     	
     }
@@ -104,9 +101,4 @@ public class Processor {
     private void process(Map<String, Object> map) {
         System.out.println("processing...");
     }
-
-    /*
-    public static void main(String[] args) {
-        Processor processor = new Processor(1);
-    }*/
 }
