@@ -28,7 +28,8 @@ public class Processor {
         for (int i = 0; i < nThreads; i++) {
             executorService.execute(new Runnable() {
                 public void run() {
-                	                	
+                	Long timerSleep = 5000L;
+                	
                     while (running) {
 //                        Transaction transaction = Hazelcast.getTransaction();
                         try {
@@ -40,17 +41,18 @@ public class Processor {
                             	SessionInfo session= sessionInfo.get(sessionId);
                             	processSessionViews(session,client);
                                 sessionInfo.remove(sessionId);
+                                timerSleep = 5000L;
                             } else {
-                            	Thread.currentThread().sleep(5000L);
+                            	logger.log(Level.INFO, "Processor thread sleeping: " + timerSleep);
+                            	Thread.currentThread().sleep(timerSleep);                            	
+                            	timerSleep = timerSleep + 5000L;
                             }
-                            //CrashReport report = map.get(reportId);
-                            //process(report.getJSON());
-                            //map.put(reportId, report);
+
                             //transaction.commit();
                             
                         } catch (Exception e) {
                             logger.log(Level.INFO, "Processor transaction rollback: ", e);
-//                            transaction.rollback();
+                            //transaction.rollback();
                         }
                     }
                 }
