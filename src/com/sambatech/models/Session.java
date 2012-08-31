@@ -1,8 +1,5 @@
 package com.sambatech.models;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
 import java.io.Serializable;
 
 public class Session implements Serializable{

@@ -1,6 +1,5 @@
 package com.sambatech.services;
 
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
@@ -44,7 +43,7 @@ public class Processor {
                                 timerSleep = 5000L;
                             } else {
                             	logger.log(Level.INFO, "Processor thread sleeping: " + timerSleep);
-                            	Thread.currentThread().sleep(timerSleep);                            	
+								Thread.sleep(timerSleep);                            	
                             	timerSleep = timerSleep + 5000L;
                             }
 
@@ -98,9 +97,5 @@ public class Processor {
     	   lock.unlock();
     	}    	   	
     	
-    }
-    
-    private void process(Map<String, Object> map) {
-        System.out.println("processing...");
     }
 }
