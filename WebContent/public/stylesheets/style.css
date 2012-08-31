@@ -1,0 +1,53 @@
+/* ===== Primary Styles ========================================================
+   Author: SambaTech
+   ========================================================================== */
+
+body {
+	padding-top: 60px;
+	min-width: 960px;
+	padding-bottom: 40px;
+}
+
+#list {
+	overflow: hidden;
+	overflow-y: auto;
+	max-height: 300px; 
+}
+
+.checkbox { margin-right: 20px; }
+
+.form-vertical textarea {
+	width: 100%;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+#embed-list {
+	float: left;
+	width: 280px;
+	margin-left: 20px;
+}
+
+#embed-config {
+	float: left;
+	width: 640px;
+	margin-left: 20px;
+}
+
+.input-prepend {
+	width: 128px;
+	float: left;
+	margin-right: 10px;
+}
+
+.clear {
+	clear: both;
+}
+
+.hidden {
+	display: none;
+}
+
+
+
