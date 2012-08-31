@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Live Crawler</title>
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<h1 class="brand">Crawler Live</h1>
+				<a id="refresh" class="btn pull-right" href="#"><i class="icon-refresh"></i> Refresh</a>
+			</div>
+		</div>
+	</div>
+    <div class="container">
+    	<form id="request-form">
+			<fieldset>
+				<label>Player Key</label>
+				<input id="player-key" type="text" class="input-medium" placeholder="Player Key">
+				<label>Mídia ID</label>
+				<input id="media-id" type="text" class="input-medium" placeholder="Mídia ID">
+				<label>Número de requisições</label>
+	    			<select id="requests" class="input-medium">
+	    					<option value=""></option>
+	    					<option value="10">10</option>
+	    					<option value="50">50</option>
+	    					<option value="100">100</option>
+	    					<option value="500">500</option>
+	    					<option value="1000">1000</option>
+	    					<option value="100000">100000</option>
+					</select>
+				<label>Número de requisições</label>
+				<input id="reqNum" type="text" class="input-medium">	
+	    		<label class="radio">
+					<input name="action" checked type="radio" value="loads">Loads
+				</label>
+				<label class="radio">
+					<input name="action" type="radio" value="plays">Plays
+				</label>
+			</fieldset>
+			<fieldset>
+				<button type="submit" class="btn" id="ok">OK</button>
+			</fieldset>
+		</form>
+		<hr>
+		<div id="countDown">
+			
+		</div>
+		<hr>      
+		<footer>
+			<p>&copy; SambaTech 2012</p>
+		</footer>
+
+	</div>
+	<script src="javascripts/crawlerLive.js"></script>
+</body>
+</html>	
+	
